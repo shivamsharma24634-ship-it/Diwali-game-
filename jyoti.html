@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Diwali Game</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #ffecd2, #fcb69f);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+    }
+    h1 {
+        color: #ff4500;
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    p { font-size: 1.2rem; }
+    .options button {
+        padding: 12px 25px;
+        margin: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        font-weight: bold;
+    }
+    .options button:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 15px white;
+    }
+    #message {
+        margin-top: 30px;
+        font-size: 24px;
+        color: #4b0082;
+        animation: glow 1s infinite alternate;
+    }
+    @keyframes glow {
+        from { text-shadow: 0 0 5px #ff00ff; }
+        to { text-shadow: 0 0 20px #ff00ff; }
+    }
+    canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<h1>Happy Diwali, Jyoti! 🌟</h1>
+<p>Choose your favorite color for a surprise:</p>
+
+<div class="options">
+    <button style="background-color: blue;" onclick="showMessage('Blue')">Blue</button>
+    <button style="background-color: green;" onclick="showMessage('Green')">Green</button>
+    <button style="background-color: red;" onclick="showMessage('Red')">Red</button>
+    <button style="background-color: yellow; color:black;" onclick="showMessage('Yellow')">Yellow</button>
+    <button style="background-color: pink; color:black;" onclick="showMessage('Pink')">Pink</button>
+</div>
+
+<div id="message"></div>
+<canvas id="fireworks"></canvas>
+
+<script>
+// Message function
+function showMessage(color) {
+    document.getElementById('message').innerHTML = 
+        `Wow! You chose <strong>${color}</strong>! 🎉<br>Happy Diwali, Jyoti! 💖`;
+    launchFirework();
+}
+
+// Fireworks animation
+const canvas = document.getElementById('fireworks');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function launchFirework() {
+    for(let i=0; i<50; i++){
+        particles.push({
+            x: Math.random()*canvas.width,
+            y: canvas.height,
+            vx: (Math.random()-0.5)*5,
+            vy: Math.random()*-10-2,
+            alpha: 1,
+            color: `hsl(${Math.random()*360}, 100%, 50%)`
+        });
+    }
+}
+
+function animate() {
+    ctx.fillStyle = "rgba(0,0,0,0.1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= 0.01;
+        p.vy += 0.05;
+        ctx.fillStyle = p.color.replace('hsl', 'hsla').replace(')', `,${p.alpha})`);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+        ctx.fill();
+        if(p.alpha <= 0) particles.splice(i,1);
+    });
+    requestAnimationFrame(animate);
+}
+animate();
+
+// Resize canvas
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>
